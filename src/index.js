@@ -15,7 +15,7 @@ app.use(morgan('dev'));
 app.use('/api', apiRoutes);
 
 // Conectar a MongoDB
-mongoose.connect(process.env.MONGO_URI_TEST_ENV, {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('Conectado a MongoDB'))
