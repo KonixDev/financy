@@ -42,12 +42,12 @@ class NotificationService {
     notification.intervals.forEach((interval) => {
       const [hour, minute] = interval.split(':');
       const cronTime = `${minute} ${hour} * * *`; // Ejemplo: "0 9 * * *" para las 9:00 AM todos los días
-
+  
       cron.schedule(cronTime, async () => {
-        const now = moment();
-        const start = moment(notification.startDate);
-        const end = notification.endDate ? moment(notification.endDate) : null;
-
+        const now = moment().tz('America/Argentina/Buenos_Aires'); // Zona horaria específica
+        const start = moment(notification.startDate).tz('America/Argentina/Buenos_Aires');
+        const end = notification.endDate ? moment(notification.endDate).tz('America/Argentina/Buenos_Aires') : null;
+  
         // Verificar si la notificación está dentro de su periodo activo
         if (now.isAfter(start) && (!end || now.isBefore(end))) {
           await this.sendNotification(notification);
