@@ -21,7 +21,9 @@ const {
   handleDeleteNotification,
 } = require("./notificationController.js");
 const SubscriptionController = require("./subscriptionController.js");
-NotificationService.scheduleAllNotifications();
+NotificationService.scheduleAllNotifications().then(() => {
+  console.log("Scheduled notifications");
+});
 
 let usersInRegistration = {};
 let usersInProcess = {};
