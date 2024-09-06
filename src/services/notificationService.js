@@ -39,32 +39,35 @@ class NotificationService {
   }
 
   static async scheduleNotification(notification) {
-    await notification.intervals.forEach((interval) => {
+    for (const interval of notification.intervals) {
       const [hour, minute] = interval.split(':');
-
+  
       // Obtener la hora ajustada a la zona horaria de Buenos Aires
       let nowInBuenosAires = moment().tz('America/Argentina/Buenos_Aires');
       let scheduledTime = nowInBuenosAires.clone().hour(hour).minute(minute);
-
-      let cronTime = `${scheduledTime.minute()} ${scheduledTime.hour()} * * *`; // "0 9 * * *" para las 9:00 AM de Buenos Aires
+  
+      let cronTime = `${scheduledTime.minute()} ${scheduledTime.hour()} * * *`; // Formato de cron "0 9 * * *" para las 9:00 AM en Buenos Aires
       console.log(`Programando notificación para ${notification.user} a las ${scheduledTime.format('HH:mm')}`);
       console.log(cronTime);
-      console.log({scheduledTime});
+      console.log({ scheduledTime });
+  
       // Programar la tarea cron
       cron.schedule(cronTime, async () => {
         console.log(`Ejecutando notificación para ${notification.user} a las ${scheduledTime.format('HH:mm')}`);
         console.log(cronTime);
+  
         const now = moment().tz('America/Argentina/Buenos_Aires');
         const start = moment(notification.startDate).tz('America/Argentina/Buenos_Aires');
         const end = notification.endDate ? moment(notification.endDate).tz('America/Argentina/Buenos_Aires') : null;
-
+  
         // Verificar si la notificación está dentro del periodo activo
         if (now.isAfter(start) && (!end || now.isBefore(end))) {
           await this.sendNotification(notification);
         }
       });
-    });
-}
+    }
+  }
+  
 
   static async sendNotification(notification) {
     const { user, type, message } = notification;
