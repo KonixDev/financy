@@ -55,15 +55,8 @@ class NotificationService {
       cron.schedule(cronTime, async () => {
         console.log(`Ejecutando notificación para ${notification.user} a las ${scheduledTime.format('HH:mm')}`);
         console.log(cronTime);
-  
-        const now = moment().tz('America/Argentina/Buenos_Aires');
-        const start = moment(notification.startDate).tz('America/Argentina/Buenos_Aires');
-        const end = notification.endDate ? moment(notification.endDate).tz('America/Argentina/Buenos_Aires') : null;
-  
         // Verificar si la notificación está dentro del periodo activo
-        if (now.isAfter(start) && (!end || now.isBefore(end))) {
-          await this.sendNotification(notification);
-        }
+        await this.sendNotification(notification);
       });
     }
   }
