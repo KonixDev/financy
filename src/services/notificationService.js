@@ -47,9 +47,13 @@ class NotificationService {
       let scheduledTime = nowInBuenosAires.clone().hour(hour).minute(minute);
 
       let cronTime = `${scheduledTime.minute()} ${scheduledTime.hour()} * * *`; // "0 9 * * *" para las 9:00 AM de Buenos Aires
-      
+      console.log(`Programando notificación para ${notification.user} a las ${scheduledTime.format('HH:mm')}`);
+      console.log(cronTime);
+      console.log({scheduledTime});
       // Programar la tarea cron
       cron.schedule(cronTime, async () => {
+        console.log(`Ejecutando notificación para ${notification.user} a las ${scheduledTime.format('HH:mm')}`);
+        console.log(cronTime);
         const now = moment().tz('America/Argentina/Buenos_Aires');
         const start = moment(notification.startDate).tz('America/Argentina/Buenos_Aires');
         const end = notification.endDate ? moment(notification.endDate).tz('America/Argentina/Buenos_Aires') : null;
