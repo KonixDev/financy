@@ -235,7 +235,7 @@ async function handleGastos(bot, chatId) {
 async function handleAddGasto(bot, chatId) {
   if (await checkIfRegistered(chatId, bot)) {
     usersInProcess[chatId] = { action: ACTIONS.ADD_GASTO };
-    await bot.sendMessage(chatId, MESSAGES.ENTER_AMOUNT);
+    await bot.sendMessage(chatId, MESSAGES.ENTER__SPEND_AMOUNT);
   }
 }
 

@@ -20,7 +20,7 @@ exports.MESSAGES = {
   EMAIL_EXISTS:
     "Este correo ya está registrado. Intenta con otro correo o usa el botón de inicio de sesión.",
   INVALID_EMAIL: "Por favor, ingresa un correo electrónico válido.",
-  ENTER_AMOUNT: "Por favor, ingresa el monto del gasto:",
+  ENTER__SPEND_AMOUNT: "Por favor, ingresa el monto del gasto:",
   ENTER_CATEGORY_NAME: "Por favor, ingresa el nombre de la categoría:",
   GASTO_REGISTERED: (spentAmount, category, totalSpent) =>
     `Gasto de $${spentAmount} en "${category}" registrado. Total gastado en el último mes para la categoría: ${totalSpent}.`,

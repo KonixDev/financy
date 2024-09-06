@@ -4,8 +4,8 @@ const Category = require('../models/Categoria');
 
 class CategoryRepository {
   static async createCategory(CategoryData) {
-    const Category = new Category(CategoryData);
-    return Category.save();
+    const cat = new Category(CategoryData);
+    return cat.save();
   }
 
   static async findById(id) {
