@@ -2,6 +2,8 @@ const GastoRepository = require("../repositories/gastoRepository");
 const MetaRepository = require("../repositories/metaRepository");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const moment = require("moment");
+const { getMesName } = require("../utils/datesUtils");
+const { formatCurrency, CURRENCYS_OPTIONS } = require("../utils/currencyUtil");
 
 const width = 800; // Ancho del gráfico
 const height = 400; // Alto del gráfico
@@ -53,14 +55,20 @@ class SummaryService {
 
   static formatSummaryText(gastosPorMes, gastosPorCategoria, metasProgreso) {
     let text =
-      "Resumen de Gastos:\
-      \n\nGastos por Mes:";
+      "Resumen de Gastos (en los últimos 30 días):\
+      \n\nGastos en el Mes:";
     Object.keys(gastosPorMes).forEach((mes) => {
-      text += `\n${mes}: $${gastosPorMes[mes]}`;
+      text += `\n${getMesName(mes)}: ${formatCurrency(
+        gastosPorMes[mes],
+        CURRENCYS_OPTIONS.PESO_ARGENTINO
+      )}`;
     });
     text += "\n\nGastos por Categoría:";
     Object.keys(gastosPorCategoria).forEach((categoria) => {
-      text += `\n${categoria}: $${gastosPorCategoria[categoria]}`;
+      text += `\n${categoria}: ${formatCurrency(
+        gastosPorCategoria[categoria],
+        CURRENCYS_OPTIONS.PESO_ARGENTINO
+      )}`;
     });
     text += "\n\nProgreso de Metas:";
     metasProgreso.forEach((meta) => {
@@ -184,10 +192,10 @@ class SummaryService {
     );
 
     return {
-      gastoMensualChart: gastoMensualChart.toString("base64"),
-      gastoCategoriaChart: gastoCategoriaChart.toString("base64"),
-      metaProgresoChart: metaProgresoChart.toString("base64"),
-      gastoDiarioChart: gastoDiarioChart.toString("base64"),
+      gastoMensualChart,
+      gastoCategoriaChart,
+      metaProgresoChart,
+      gastoDiarioChart,
     };
   }
 

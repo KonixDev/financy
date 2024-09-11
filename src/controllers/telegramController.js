@@ -21,6 +21,7 @@ const {
   handleDeleteNotification,
 } = require("./notificationController.js");
 const SubscriptionController = require("./subscriptionController.js");
+const SummaryService = require("../services/summaryService.js");
 NotificationService.scheduleAllNotifications().then(() => {
   console.log("Scheduled notifications");
 });
@@ -208,7 +209,7 @@ async function handleMenu(bot, chatId) {
 async function handleSummary(bot, chatId) {
   if (await checkIfRegistered(chatId, bot)) {
     const userId = await AuthService.findUserByTelegramId(chatId.toString());
-    const summaryData = await GastoService.getSummary(userId);
+    const summaryData = await SummaryService.generateSummary(userId);
     await bot.sendMessage(chatId, summaryData.text);
     await bot.sendPhoto(chatId, summaryData.charts.gastoMensualChart, {
       caption: "Gastos por Mes",
@@ -339,6 +340,7 @@ async function selectCategory(bot, chatId) {
   const options = getCategoryOptions(categories);
   await bot.sendMessage(chatId, MESSAGES.SELECT_CATEGORY, options);
 }
+
 
 module.exports = {
   handleStart,

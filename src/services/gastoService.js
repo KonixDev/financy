@@ -1,6 +1,6 @@
 // services/gastoService.js
 const GastoRepository = require("../repositories/gastoRepository");
-const MetaService = require("./metaService");
+const MetaRepository = require("../repositories/metaRepository");
 const ChartHelper = require("../helpers/chartHelper");
 const moment = require("moment");
 const { MESSAGES } = require("../constants/messages");
@@ -11,12 +11,20 @@ const { getMesName } = require("../utils/datesUtils");
 const { ACTIONS } = require("../constants/actions");
 class GastoService {
   static async getSummary(userId) {
+    // Obtener gastos y metas del usuario
     const gastos = await GastoRepository.findByUser(userId);
-    const metas = await MetaService.getMetasByUser(userId);
+    const metas = await MetaRepository.findByUser(userId);
 
+    // Calcular resumen de gastos por mes
     const gastosPorMes = this.calculateGastosPorMes(gastos);
+
+    // Calcular resumen de gastos por categoría
     const gastosPorCategoria = this.calculateGastosPorCategoria(gastos);
+
+    // Calcular progreso de metas
     const metasProgreso = this.calculateMetasProgreso(metas);
+
+    // Calcular resumen de consumo diario en los últimos 30 días
     const gastosPorDia = this.calculateGastosPorDia(gastos);
 
     const charts = await this.generateCharts(
@@ -25,6 +33,7 @@ class GastoService {
       metasProgreso,
       gastosPorDia
     );
+
     const text = this.formatSummaryText(
       gastosPorMes,
       gastosPorCategoria,
@@ -73,6 +82,7 @@ class GastoService {
 
     return { spentLastMonthChart };
   }
+
   static calculateGastosPorMes(gastos) {
     return gastos.reduce((acc, gasto) => {
       const mes = moment(gasto.date).format("YYYY-MM");
@@ -256,7 +266,7 @@ class GastoService {
       usersInProcess[chatId].stage = ACTIONS.GASTO_UPDATE_DATE;
       return await bot.sendMessage(chatId, MESSAGES.ENTER_NEW_DATE);
     }
-    
+
     if (stage && stage === ACTIONS.GASTO_UPDATE_DATE) {
       // Check if Date is in correct format, YYYY-MM-DD
       let newDate = new Date(text);
@@ -267,20 +277,27 @@ class GastoService {
       // Add one day to the date to avoid timezone issues
       newDate.setDate(newDate.getDate() + 1);
       usersInProcess[chatId].newDateText = newDate;
-      const gastoUpdatedData = {}
+      const gastoUpdatedData = {};
       if (usersInProcess[chatId].newAmount) {
         gastoUpdatedData.amount = usersInProcess[chatId].newAmount;
       }
       if (usersInProcess[chatId].newDateText) {
         gastoUpdatedData.date = usersInProcess[chatId].newDateText;
       }
-      const gastoUpdated = await this.updateGasto(gastoId, gastoUpdatedData, user._id);
+      const gastoUpdated = await this.updateGasto(
+        gastoId,
+        gastoUpdatedData,
+        user._id
+      );
       delete usersInProcess[chatId]; // Clean up process
-      await bot.sendMessage(chatId, MESSAGES.GASTO_UPDATED(
-        gastoUpdated.amount,
-        gastoUpdated.category.name,
-        gastoUpdated.date.toLocaleDateString()
-      ));
+      await bot.sendMessage(
+        chatId,
+        MESSAGES.GASTO_UPDATED(
+          gastoUpdated.amount,
+          gastoUpdated.category.name,
+          gastoUpdated.date.toLocaleDateString()
+        )
+      );
     }
   }
 

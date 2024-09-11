@@ -1,9 +1,9 @@
 // services/notificationService.js
 const NotificationRepository = require('../repositories/notificationRepository');
 const GastoService = require('./gastoService');
-const { sendMessageToUser } = require('../helpers/telegramResponseHelper');
 const cron = require('node-cron');
 const moment = require('moment-timezone');
+const { sendMessageToUser } = require('../bot/telegramBot');
 
 class NotificationService {
   static async createNotification(userId, type, message, intervals, frequency, startDate, endDate) {
